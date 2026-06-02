@@ -1,4 +1,4 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     下载 G2PW 多音字消歧 ONNX 模型到指定目录

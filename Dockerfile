@@ -1,4 +1,4 @@
-﻿FROM node:20-alpine AS web-builder
+FROM node:20-alpine AS web-builder
 WORKDIR /app
 COPY apps/web/package*.json apps/web/
 RUN cd apps/web && npm ci --ignore-scripts
