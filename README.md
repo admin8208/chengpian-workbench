@@ -1,10 +1,16 @@
 # 成片工作台
 
-`成片工作台` 是一个面向单机 / 私有化部署场景的视频生产工作台。
+> 一款面向单机 / 私有化部署场景的**短视频自动生产工作台**。
+> 从文案到成片，全程自动化，支持 AI 智能生图和网络素材匹配双模式。
 
-当前产品主线聚焦于文案创作：从项目标题、原文、脚本/分镜、配音字幕、素材补齐到最终成片输出。
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)
+![Vue 3](https://img.shields.io/badge/Vue-3.5-brightgreen)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
+![Redis](https://img.shields.io/badge/Redis-7-red)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-当前默认运行形态：
+架构概述：
 
 - 前端构建产物：`apps/web/dist`
 - API 服务：`apps/api/run_api.py`
@@ -13,74 +19,61 @@
 - 任务队列：Redis（Huey 后端）
 - 本地运行目录：`data/`
 
-## 快速开始
+Windows 运行说明：
 
-### Docker 一键启动（推荐）
+- 开发/调试/生产脚本现在会通过 `scripts/windows/run_worker_supervisor.ps1` 拉起 worker。
+- 该 supervisor 会在 `run_worker.py` 意外退出后自动重启，避免任务长期停在 `queued` 或残留假 `running` 状态。
 
-需安装 [Docker](https://docker.com/products/docker-desktop/) 和 Docker Compose。
+## 核心功能
 
-```bash
-# 1. 克隆仓库
-git clone https://github.com/admin8208/chengpian-workbench.git
-cd chengpian-workbench
+### 双模式视频创作
 
-# 2. 下载多音字模型（约 160MB，仅首次）
-bash scripts/setup/download_g2pw_model.sh
+- **AI 智能创作**：输入标题/原文，LLM 生成文案脚本 → AI 逐镜头出图 → TTS 配音 → 合成成片
+- **网络素材创作**：输入标题/原文，LLM 生成文案脚本 → 自动搜索并匹配网络素材（Pexels / Pixabay / Wikimedia）→ TTS 配音 → 合成成片
+- **音频驱动模式**：上传旁白音频，自动转写后生成完整视频
+- **Autopilot 自动驾驶**：一键启动，自动执行全部 4 个阶段（分镜 → 配音 → 素材 → 渲染），支持断点续传
 
-# 3. 启动全部服务
-docker compose up -d
+### 智能配音
 
-# 4. 打开浏览器访问 http://localhost:8010
-#    首次使用会自动引导创建管理员账号
-```
+- **在线配音**：Edge TTS，50+ 自然中文音色可选
+- **离线配音**：Piper TTS，完全离线无需网络，一键安装
+- **智能剧情配音**：LLM 辅助分段，带情感控制，音色更自然
+- **自动回退**：在线失败自动切换到离线
 
-> 数据库密码可通过 CHENGPIAN_DB_PASSWORD 环境变量自定义，默认为 chengpian。
+### 画面素材
 
-### Windows 手动部署
+- **AI 图片生成**：支持 OpenAI 兼容接口，可对接 DeepSeek / Moonshot / Ollama 等
+- **网络素材搜索**：Pexels、Pixabay、Wikimedia Commons 三源切换
+- **素材纠偏**：自动检测缺失/重复素材，智能修复与镜头级人工修正
 
-前置要求：Python 3.10+、Node.js 18+、PostgreSQL 16、Redis 7、FFmpeg
+### 素材管理与网盘导入
 
-```powershell
-git clone https://github.com/admin8208/chengpian-workbench.git
-cd chengpian-workbench
-.\scripts\setup\download_g2pw_model.ps1
-copy .env.example .env.local
-pip install -r apps/api/requirements.txt
-cd apps/web
-npm install
-npm run build
-cd ../..
-python apps/api/run_worker.py
-python apps/api/run_api.py
-```
+- **素材库**：图片/视频上传、预览、搜索、删除
+- **云盘导入**：支持 WebDAV（坚果云/NextCloud）、阿里云盘、百度网盘、OneDrive
 
-### Linux 手动部署
+### 系统管理与监控
 
-```bash
-git clone https://github.com/admin8208/chengpian-workbench.git
-cd chengpian-workbench
-bash scripts/setup/download_g2pw_model.sh
-cp .env.example .env.local
-pip install -r apps/api/requirements.txt
-cd apps/web
-npm install
-npm run build
-cd ../..
-python apps/api/run_worker.py &
-python apps/api/run_api.py
-```
+- **健康检查仪表盘**：一键检测存储 / Worker / FFmpeg / TTS / 网络链路
+- **任务中心**：全局任务管理，支持暂停、恢复、取消、重试
+- **Provider 配置**：可视化配置 LLM、生图、素材源、TTS 后端
+- **子账号管理**：管理员创建和管理子账号
 
+### 实用工具
 
-## 核心能力
+- **视频转音频**：上传视频或粘贴链接（支持抖音 / B站 / YouTube 等）提取音轨
+- **一键创建项目**：从提取的音频直接创建视频项目
 
-- 创建文案创作项目并选择赛道 / 素材模式
-- 生成视频、继续生成、重跑全部
-- 分镜素材纠偏与镜头级人工修正
-- 在线 / 离线配音与字幕预览
-- 最终成片渲染与历史输出管理
-- 素材库管理与网盘导入
-- 大模型、生图、素材源、TTS 配置与健康检查
-- 管理员初始化、登录、子账号管理
+### 技术栈
+
+| 层 | 技术 |
+|--|------|
+| 后端框架 | Python FastAPI |
+| 任务队列 | Huey + Redis |
+| 数据库 | PostgreSQL |
+| 前端框架 | Vue 3 + TypeScript + Element Plus |
+| 构建工具 | Vite |
+| TTS | Edge TTS（在线）+ Piper（离线） |
+| 部署 | Docker Compose / systemd / nginx |
 
 ## 目录结构
 
@@ -143,15 +136,3 @@ export CHENGPIAN_DATABASE_URL=postgresql+psycopg://chengpian:password@127.0.0.1:
 - 数据库设置：`apps/api/app/settings.py`
 - 数据库初始化：`apps/api/app/db.py`
 - systemd 模板：`deploy/systemd/`
-
-## 当前状态说明
-
-- 当前默认部署形态仍然是单机
-- 当前业务数据库已经切换到 PostgreSQL
-- `data/` 不再承担业务数据库职责
-- 前端 README 已按当前真实路由更新
-- 生产环境下不要以 `root` 手工启动 API / Worker，否则 `data/` 可能出现 `root:root` 文件并导致项目删除失败
-
-## 术语约定
-
-- `文案创作`：指从标题 / 原文出发，经脚本、分镜、配音、素材、渲染得到成片的流程，对应 `/creator/ai` 或 `/creator/network`
