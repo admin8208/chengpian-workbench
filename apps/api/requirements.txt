@@ -1,0 +1,36 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+python-dotenv==1.0.1
+
+# DB
+sqlmodel==0.0.22
+psycopg[binary]==3.2.9
+
+# Background jobs (Windows-friendly)
+huey==2.5.3
+redis==5.2.1
+
+# Media pipeline (MVP render)
+moviepy==2.1.2
+pillow==10.4.0
+imageio-ffmpeg==0.5.1
+
+# Uploads
+python-multipart==0.0.19
+
+# Optional: nicer logs
+loguru==0.7.3
+requests>=2.31.0
+
+# TTS
+edge-tts==7.2.8
+
+# Audio transcription
+faster-whisper>=1.1.1
+
+# Encrypt API keys at rest
+cryptography==42.0.8
+
+# Smart watermark removal
+opencv-python-headless>=4.8.0
+numpy>=1.24.0

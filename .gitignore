@@ -1,0 +1,43 @@
+﻿# Local environment files
+.env
+.env.local
+.env.prod
+*.local
+
+# Runtime data, secrets, logs, exports, and generated media
+data/
+*.log
+*.dump
+*.tmp
+
+# G2PW polyphone model (~152MB, must be downloaded separately)
+apps/api/g2pW/g2pw.onnx
+
+# Python caches and virtualenvs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+apps/api/.venv-win/
+
+# Node dependencies and build output
+node_modules/
+apps/web/node_modules/
+apps/web/dist/
+apps/web/dist-ssr/
+
+# Editor and OS files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+

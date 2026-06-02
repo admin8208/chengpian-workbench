@@ -1,0 +1,3 @@
+PROMPT_META_VERSION = 2
+PROMPT_META_WRITER_GENERATE = "storyboard_writer_v2"
+PROMPT_META_WRITER_REWRITE = "rewrite_storyboard_v2"

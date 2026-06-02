@@ -1,0 +1,29 @@
+[Unit]
+Description=Chengpian Workbench API
+After=network.target redis-server.service
+Wants=redis-server.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/chengpian-workbench/apps/api
+EnvironmentFile=/opt/chengpian-workbench/deploy/systemd/chengpian.env
+Environment=CHENGPIAN_API_HOST=127.0.0.1
+Environment=CHENGPIAN_API_PORT=8010
+Environment=CHENGPIAN_RELOAD=0
+Environment=CHENGPIAN_EXPOSE_DOCS=0
+Environment=CHENGPIAN_DATA_DIR=/opt/chengpian-workbench/data
+Environment=CHENGPIAN_WEB_DIST_DIR=/opt/chengpian-workbench/apps/web/dist
+Environment=CHENGPIAN_REDIS_URL=redis://127.0.0.1:6379/0
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/chengpian-workbench/apps/api/.venv/bin/python run_api.py
+Restart=always
+RestartSec=3
+User=chengpian
+Group=chengpian
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
